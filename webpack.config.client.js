@@ -1,7 +1,7 @@
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
-
+const LoadablePlugin = require('@loadable/webpack-plugin')
 module.exports = {
   name: "client",
   entry: {
@@ -20,13 +20,23 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: "tsconfig.client.json",
-        },
+        use: {
+          loader: 'babel-loader',
+          options: {
+            "presets": [
+                "@babel/typescript",
+                "@babel/react"
+            ],
+            "plugins": [
+              "@babel/proposal-class-properties",
+              "@babel/proposal-object-rest-spread",
+              "@loadable/babel-plugin"
+            ]
+          }
+        }
       },
     ],
   },
   target: "web",
-  plugins: [new CleanWebpackPlugin(), new WebpackManifestPlugin()],
+  plugins: [new CleanWebpackPlugin(), new WebpackManifestPlugin(), new LoadablePlugin()],
 };

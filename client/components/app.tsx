@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import styled from "styled-components";
 import {Routes, Route} from 'react-router'
 import {HelloRoute} from "../routes/HelloRoute";
 import {GoodByeRoute} from "../routes/GoodByeRoute";

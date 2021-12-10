@@ -4,8 +4,9 @@ import path from "path";
 import ReactDOMServer from "react-dom/server";
 import { App } from "../client/components/app";
 import {ServerStyleSheet, StyleSheetManager} from 'styled-components'
-import React, {createElement} from "react";
+import React from "react";
 import {StaticRouter} from "react-router-dom/server";
+import {ChunkExtractor} from "@loadable/server";
 
 const sheet = new ServerStyleSheet()
 const server = express();
@@ -20,17 +21,21 @@ const manifest = fs.readFileSync(
   "utf-8"
 );
 const assets = JSON.parse(manifest);
-
+const statsFile = path.resolve('./dist/static/loadable-stats.json')
 server.get("*", async (req, res) => {
+    const chunkExtractor = new ChunkExtractor({statsFile, entrypoints: ["client"] })
+    const appElem = <StaticRouter location={req.url}>
+        <StyleSheetManager sheet={sheet.instance}>
+            <App />
+        </StyleSheetManager>
+    </StaticRouter>
+    const collectedChunks = chunkExtractor.collectChunks(appElem);
+    const scriptTags = chunkExtractor.getScriptTags()
     const component = ReactDOMServer.renderToString(
-        <StaticRouter location={req.url}>
-            <StyleSheetManager sheet={sheet.instance}>
-                <App />
-            </StyleSheetManager>
-        </StaticRouter>
+        collectedChunks
     )
   const styleTags = sheet.getStyleTags();
-  res.render("client", { assets, component, styleTags });
+  res.render("client", { assets, component, styleTags, scriptTags });
 });
 
 server.listen(3000, () => {
