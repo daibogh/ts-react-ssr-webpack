@@ -4,6 +4,7 @@ export const counterSlice = createSlice({
   name: 'counter',
   initialState: {
     value: 0,
+    launchedTime: new Date().toISOString(),
   },
   reducers: {
     incremented: (state) => {

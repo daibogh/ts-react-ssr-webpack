@@ -12,6 +12,7 @@ const Toolbar = styled.div`
 `
 const CounterRoute: React.FC = () => {
   const counter = useAppSelector((state) => state.value)
+  const launchedTime = useAppSelector((state) => state.launchedTime)
   const dispatch = useAppDispatch()
   const inc = useCallback(() => dispatch(incremented()), [])
   const dec = useCallback(() => dispatch(decremented()), [])
@@ -22,6 +23,7 @@ const CounterRoute: React.FC = () => {
         <button onClick={dec}>-</button>
         <button onClick={inc}>+</button>
       </Toolbar>
+      <Paragraph>launched at {launchedTime}</Paragraph>
     </div>
   )
 }
