@@ -9,6 +9,11 @@ import { StaticRouter } from 'react-router-dom/server'
 import { ChunkExtractor } from '@loadable/server'
 import { Provider } from 'react-redux'
 import { createStore } from '../client/store'
+import ssrPrepass from 'react-ssr-prepass'
+import createFetchStrategy from '../client/react-query-universal/fetchStrategies/createFetchStrategy'
+import 'isomorphic-fetch'
+import { isServer } from 'react-query/types/core/utils'
+
 const sheet = new ServerStyleSheet()
 const server = express()
 
@@ -29,16 +34,18 @@ server.get('*', async (req, res) => {
     entrypoints: ['client'],
   })
   const store = createStore({ launchedTime: new Date().toISOString() })
+  const fetchStrategy = createFetchStrategy({ enableSharedCache: true }, true)
   const appElem = (
     <Provider store={store}>
       <StaticRouter location={req.url}>
         <StyleSheetManager sheet={sheet.instance}>
-          <App />
+          <App fetchStrategy={fetchStrategy} />
         </StyleSheetManager>
       </StaticRouter>
     </Provider>
   )
   const collectedChunks = chunkExtractor.collectChunks(appElem)
+  await ssrPrepass(collectedChunks)
   const scriptTags = chunkExtractor.getScriptTags()
   const component = ReactDOMServer.renderToString(collectedChunks)
   const styleTags = sheet.getStyleTags()

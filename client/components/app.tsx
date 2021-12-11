@@ -5,15 +5,14 @@ import { GoodByeRoute } from '../routes/GoodByeRoute'
 import { MainLayout } from './MainLayout'
 import CounterRoute from '../routes/CounterRoute/CounterRoute'
 import PostsRoute from '../routes/PostsRoute/PostsRoute'
-import { QueryClient, QueryClientProvider } from 'react-query'
-const queryClient = new QueryClient()
-export const App: React.FC = () => {
+import ReactQueryUniversal from '../react-query-universal/ReacttQueryUniversal'
+export const App: React.FC<any> = ({ fetchStrategy }) => {
   useEffect(() => {
     console.log('only on client')
   }, [])
   console.log('on both sides')
   return (
-    <QueryClientProvider client={queryClient}>
+    <ReactQueryUniversal fetchStrategy={fetchStrategy}>
       <Routes>
         <Route path="/" element={<MainLayout children={<>index</>} />} />
         <Route
@@ -33,6 +32,6 @@ export const App: React.FC = () => {
           element={<MainLayout children={<PostsRoute />} />}
         />
       </Routes>
-    </QueryClientProvider>
+    </ReactQueryUniversal>
   )
 }
