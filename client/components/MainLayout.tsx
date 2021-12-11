@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 const Container = styled.div`
   display: grid;
@@ -12,6 +11,7 @@ const Container = styled.div`
 const Content = styled.div`
   padding: 20px;
   box-sizing: border-box;
+  overflow-y: scroll;
 `
 export const MainLayout: React.FC = ({ children }) => {
   return (
