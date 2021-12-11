@@ -26,6 +26,7 @@ const Sidebar: React.FC = () => {
       <Link to="/">index</Link>
       <Link to="/hello">hello</Link>
       <Link to="/good-bye">goodbye</Link>
+      <Link to="/counter">counter</Link>
     </Container>
   )
 }
